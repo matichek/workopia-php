@@ -22,8 +22,6 @@ function loadView($name) {
 
     $viewPath = basePath("views/{$name}.view.php");
 
-    inspect($viewPath);
-
     if(file_exists($viewPath)) {
         require $viewPath;
     } else {
