@@ -11,7 +11,7 @@
 
 
       <?php foreach ($listings as $listing): ?>
-
+      
         <!-- Job Listing 1: Software Engineer -->
         <div class="rounded-lg shadow-md bg-white">
           <div class="p-4">
@@ -50,11 +50,8 @@
             </a>
           </div>
         </div>
-
+      
       <?php endforeach; ?>
-
-
-
 
 
     </div>
