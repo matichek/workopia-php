@@ -1,11 +1,15 @@
 <?php
 
+namespace Framework;
+
+use PDO;
+
 class Database
 {
 
     public $conn;
 
-    /**
+    /** 
      * Database constructor database class
      * @param array $config
      */
@@ -35,10 +39,17 @@ class Database
      * @throws PDO
      */
 
-    public function query($query)
+    public function query($query, $params = [])
     {
         try {
             $stmt = $this->conn->prepare($query);
+
+            // bind 
+
+            foreach ($params as $key => $value) {
+                $stmt->bindValue(":" . $key, $value);
+            }
+
             $stmt->execute();
             return $stmt;
         } catch (PDOException $e) {
