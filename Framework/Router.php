@@ -94,47 +94,41 @@ class Router
 
             $match = true;
 
-            if(count($uriSegments) !== count($routeSegments) && strtoupper($route['method']) !== $requestMethod) {
-                
+            if (count($uriSegments) !== count($routeSegments) && strtoupper($route['method']) !== $requestMethod) {
+
                 $params = [];
                 $match = true;
 
-                for($i = 0; $i < count($routeSegments); $i++) {
+                for ($i = 0; $i < count($routeSegments); $i++) {
 
                     // if uri don't match and ther is no parameter in the route
-                    if($routeSegments[$i] !== $uriSegments[$i] && !preg_match('/\{(.+?)\}/', $routeSegments[$i])) {
+                    if ($routeSegments[$i] !== $uriSegments[$i] && !preg_match('/\{(.+?)\}/', $routeSegments[$i])) {
                         $match = false;
                         break;
                     }
 
-                    if(preg_match('/\{(.+?)\}/', $routeSegments[$i], $matches)) {
-                        $params[] = $uriSegments[$i];
+                    // check for the param and add to $params array
+                    if (preg_match('/\{(.+?)\}/', $routeSegments[$i], $matches)) {
+                        $params[$matches[1]] = $uriSegments[$i];
+
                     }
 
+                }
 
+                if ($match) {
 
-                  
+                    $controller = 'App\\Controllers\\' . $route['controller'];
+                    $controllerMethod = $route['controllerMethod'];
 
+                    $controllerInstance = new $controller();
+                    $controllerInstance->$controllerMethod($params);
+
+                    return;
                 }
             }
 
 
-            // if ($route['uri'] === $uri && $route['method'] === $method) {
 
-            //     // extract  controller and method
-
-            //     $controller = 'App\\Controllers\\' . $route['controller'];
-            //     $controllerMethod = $route['controllerMethod'];
-
-            //     // instantiate controller and call method
-
-            //     $controllerInstance = new $controller();
-            //     $controllerInstance->$controllerMethod();
-
-            //     return;
-
-            
-            // }
         }
 
         $errorController = new ErrorController();
