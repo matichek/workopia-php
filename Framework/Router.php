@@ -2,6 +2,8 @@
 
 namespace Framework;
 
+use App\Controllers\ErrorController;
+
 class Router
 {
     protected $routes = [];
@@ -76,42 +78,70 @@ class Router
      * @return void
      */
 
-    public function route($uri, $method)
+    public function route($uri)
     {
+
+
+        $requestMethod = $_SERVER['REQUEST_METHOD'];
+
         foreach ($this->routes as $route) {
-            if ($route['uri'] === $uri && $route['method'] === $method) {
 
-                // extract  controller and method
+            // Split the current URI into segments
 
-                $controller = 'App\\Controllers\\' . $route['controller'];
-                $controllerMethod = $route['controllerMethod'];
+            $uriSegments = explode('/', trim($uri, '/'));
 
-                // instantiate controller and call method
+            $routeSegments = explode('/', trim($route['uri'], '/'));
 
-                $controllerInstance = new $controller();
-                $controllerInstance->$controllerMethod();
+            $match = true;
 
-                return;
+            if(count($uriSegments) !== count($routeSegments) && strtoupper($route['method']) !== $requestMethod) {
+                
+                $params = [];
+                $match = true;
+
+                for($i = 0; $i < count($routeSegments); $i++) {
+
+                    // if uri don't match and ther is no parameter in the route
+                    if($routeSegments[$i] !== $uriSegments[$i] && !preg_match('/\{(.+?)\}/', $routeSegments[$i])) {
+                        $match = false;
+                        break;
+                    }
+
+                    if(preg_match('/\{(.+?)\}/', $routeSegments[$i], $matches)) {
+                        $params[] = $uriSegments[$i];
+                    }
+
+
+
+                  
+
+                }
+            }
+
+
+            // if ($route['uri'] === $uri && $route['method'] === $method) {
+
+            //     // extract  controller and method
+
+            //     $controller = 'App\\Controllers\\' . $route['controller'];
+            //     $controllerMethod = $route['controllerMethod'];
+
+            //     // instantiate controller and call method
+
+            //     $controllerInstance = new $controller();
+            //     $controllerInstance->$controllerMethod();
+
+            //     return;
 
             
-            }
+            // }
         }
 
-        $this->error();
+        $errorController = new ErrorController();
+        $errorController->notFound();
 
 
     }
 
-    /** 
-     * Load error page
-     * @param int $httpCode
-     * @return void
-    */
-
-    public function error($httpCode = 404) {
-        http_response_code($httpCode);
-        loadView("error/{$httpCode}");
-        exit();
-    }
 
 }
