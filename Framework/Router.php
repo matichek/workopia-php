@@ -80,43 +80,28 @@ class Router
 
     public function route($uri)
     {
-
-
         $requestMethod = $_SERVER['REQUEST_METHOD'];
 
         foreach ($this->routes as $route) {
-
-            // Split the current URI into segments
-
             $uriSegments = explode('/', trim($uri, '/'));
-
             $routeSegments = explode('/', trim($route['uri'], '/'));
 
-            $match = true;
-
-            if (count($uriSegments) !== count($routeSegments) && strtoupper($route['method']) !== $requestMethod) {
-
+            if (count($uriSegments) === count($routeSegments) && strtoupper($route['method']) === $requestMethod) {
                 $params = [];
                 $match = true;
 
-                for ($i = 0; $i < count($routeSegments); $i++) {
-
-                    // if uri don't match and ther is no parameter in the route
+                for ($i = 0; $i < count($uriSegments); $i++) {
                     if ($routeSegments[$i] !== $uriSegments[$i] && !preg_match('/\{(.+?)\}/', $routeSegments[$i])) {
                         $match = false;
                         break;
                     }
 
-                    // check for the param and add to $params array
                     if (preg_match('/\{(.+?)\}/', $routeSegments[$i], $matches)) {
                         $params[$matches[1]] = $uriSegments[$i];
-
                     }
-
                 }
 
                 if ($match) {
-
                     $controller = 'App\\Controllers\\' . $route['controller'];
                     $controllerMethod = $route['controllerMethod'];
 
@@ -126,15 +111,10 @@ class Router
                     return;
                 }
             }
-
-
-
         }
 
         $errorController = new ErrorController();
         $errorController->notFound();
-
-
     }
 
 
