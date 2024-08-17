@@ -89,7 +89,7 @@ class Router
                 // instantiate controller and call method
 
                 $controllerInstance = new $controller();
-                $controllerInstance->controllerMethod();
+                $controllerInstance->$controllerMethod();
 
                 return;
 
