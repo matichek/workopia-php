@@ -7,12 +7,16 @@
  * @package worktopia
  */
 
+session_start();
+
 // Include helper functions
 require __DIR__ . '/../vendor/autoload.php';
 require '../helpers.php';
 // Include necessary classes
 
 use Framework\Router;
+
+
 
 
 // Initialize the router
