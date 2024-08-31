@@ -72,6 +72,18 @@ class Router
     }
 
     /**
+     * Add a PUT route
+     * @param string $uri
+     * @param string $controller
+     * @return void
+     */
+    public function put($uri, $controller)
+    {
+        $this->registerRoute('PUT', $uri, $controller);
+    }
+
+
+    /**
      * Route the request
      * @param string $uri
      * @param string $method

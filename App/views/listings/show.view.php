@@ -10,7 +10,8 @@
                 Back To Listings
             </a>
             <div class="flex space-x-4 ml-4">
-                <a href="/edit" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Edit</a>
+                <a href="/listings/edit/<?= $listing->id ?>"
+                    class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Edit</a>
                 <!-- Delete Form -->
                 <form method="POST">
                     <input type="hidden" name="_method" value="delete">
@@ -36,9 +37,9 @@
                     <?php $tags = explode(',', $listing->tags); ?>
                     <?php $colors = ['blue', 'green', 'red', 'yellow', 'purple', 'pink', 'indigo', 'teal']; ?>
                     <?php foreach ($tags as $index => $tag): ?>
-                    <?php $color = $colors[$index % count($colors)]; ?>
-                    <span
-                        class="inline-block text-xs bg-<?= $color ?>-500 text-white rounded-full px-2 py-1 mr-2 mb-2"><?= trim($tag) ?></span>
+                        <?php $color = $colors[$index % count($colors)]; ?>
+                        <span
+                            class="inline-block text-xs bg-<?= $color ?>-500 text-white rounded-full px-2 py-1 mr-2 mb-2"><?= trim($tag) ?></span>
                     <?php endforeach; ?>
 
                 </li>
