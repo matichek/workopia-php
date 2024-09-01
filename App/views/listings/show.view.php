@@ -23,6 +23,7 @@
         </div>
         <div class="p-4">
             <h2 class="text-xl font-semibold"><?= $listing->title ?></h2>
+            <p class="inline-block text-xs bg-blue-500 text-white rounded-full px-2 py-1">Company: <?= $listing->company ?></p>
             <p class="text-gray-700 text-lg mt-2">
                 <?= $listing->description ?>
             </p>

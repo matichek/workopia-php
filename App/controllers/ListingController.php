@@ -6,6 +6,7 @@ use Framework\Database;
 use Framework\Validation;
 use App\Models\Listing;
 
+
 class ListingController
 {
     protected $db;
@@ -63,7 +64,7 @@ class ListingController
     public function store()
     {
 
-        $allowedFields = ['title', 'description', 'salary', 'requirements', 'benefits', 'address', 'city', 'tags', 'state', 'phone', 'email'];
+        $allowedFields = ['title', 'description', 'salary', 'requirements', 'benefits', 'company', 'address', 'city', 'tags', 'state', 'phone', 'email'];
 
         $newListingData = array_intersect_key($_POST, array_flip($allowedFields));
 
@@ -71,7 +72,7 @@ class ListingController
 
         $newListingData = array_map('sanitize', $newListingData);
 
-        $requiredFields = ['title', 'description', 'email', 'city', 'state', 'salary'];
+        $requiredFields = ['title', 'description', 'email', 'city', 'state', 'salary', 'company'];
 
         $errors = [];
 
@@ -197,7 +198,7 @@ class ListingController
         //   return redirect('/listings/' . $listing->id);
         // }
 
-        $allowedFields = ['title', 'description', 'salary', 'tags', 'company', 'address', 'city', 'state', 'phone', 'email', 'requirements', 'benefits'];
+        $allowedFields = ['title', 'description', 'salary', 'tags', 'company', 'address', 'city', 'company', 'state', 'phone', 'email', 'requirements', 'benefits'];
 
         $updateValues = [];
 
@@ -223,9 +224,10 @@ class ListingController
             exit;
         } else {
             // Submit to database
+          
             $updateFields = [];
 
-            foreach (array_keys($updateValues) as $field) {
+            foreach(array_keys($updateValues) as  $field) {
                 $updateFields[] = "{$field} = :{$field}";
             }
 
@@ -234,10 +236,11 @@ class ListingController
             $updateQuery = "UPDATE listings SET $updateFields WHERE id = :id";
 
             $updateValues['id'] = $id;
+
             $this->db->query($updateQuery, $updateValues);
 
-
-
+            $_SESSION['success_message'] = 'Listing updated';
+            
             redirect('/listings/' . $id);
         }
     }

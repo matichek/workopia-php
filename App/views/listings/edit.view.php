@@ -8,6 +8,8 @@
     <div class="bg-white p-8 rounded-lg shadow-md w-full md:w-600 mx-6">
         <h2 class="text-4xl text-center font-bold mb-4">Edit Job Listing</h2>
 
+        <?= loadPartial('message'); ?>
+
         <form method="POST" action="/listings/<?= $listing->id ?>">
 
             <input type="hidden" name="_method" value="PUT">
@@ -29,7 +31,7 @@
             </div>
             <div class="mb-4">
                 <textarea name="description" placeholder="Job Description"
-                    class="w-full px-4 py-2 border rounded focus:outline-none"><?= $listing->escription ?? '' ?></textarea>
+                    class="w-full px-4 py-2 border rounded focus:outline-none"><?= $listing->description ?? '' ?></textarea>
             </div>
             <div class="mb-4">
                 <input type="text" name="salary" placeholder="Annual Salary"
