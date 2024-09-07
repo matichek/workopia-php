@@ -15,9 +15,9 @@
           <p class="text-white mr-4">Hello, <?php echo Session::get('user')['name']; ?></p>
         </div>
         <div class="flex justify-between items-center gap-4">
-          <form>
+          <form method="POST" action="/auth/logout">
             <button type="submit"
-              class="text-white hover:text-yellow-400 transition duration-300 flex items-center mr-2"></button>
+              class="text-white hover:text-yellow-400 transition duration-300 flex items-center mr-2">Logout</button>
           </form>
         </div>
 
