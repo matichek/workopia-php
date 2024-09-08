@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Framework;
 
@@ -11,7 +11,7 @@ class Session
      */
     public static function start()
     {
-        if(session_status() == PHP_SESSION_NONE) {
+        if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
     }
@@ -22,7 +22,8 @@ class Session
      * @param string $key   The key of the session variable.
      * @param mixed  $value The value to be stored in the session.
      */
-    public static function set($key, $value) {
+    public static function set($key, $value)
+    {
         $_SESSION[$key] = $value;
     }
 
@@ -33,7 +34,8 @@ class Session
      * @param mixed  $default The default value to return if the key doesn't exist.
      * @return mixed The value of the session variable or the default value.
      */
-    public static function get($key, $default = null) {
+    public static function get($key, $default = null)
+    {
         return $_SESSION[$key] ?? $default;
     }
 
@@ -43,7 +45,8 @@ class Session
      * @param string $key The key of the session variable to check.
      * @return bool True if the session variable exists, false otherwise.
      */
-    public static function has($key) {
+    public static function has($key)
+    {
         return isset($_SESSION[$key]);
     }
 
@@ -52,8 +55,9 @@ class Session
      *
      * @param string $key The key of the session variable to remove.
      */
-    public static function clear($key) {
-        if(isset($_SESSION[$key])) {
+    public static function clear($key)
+    {
+        if (isset($_SESSION[$key])) {
             unset($_SESSION[$key]);
         }
     }
@@ -61,12 +65,32 @@ class Session
     /**
      * Clears all session variables and destroys the session.
      */
-    public static function clearAll() {
+    public static function clearAll()
+    {
         session_unset();
         session_destroy();
     }
 
-    
-    
-    
+    // Set flash message
+
+    public static function setFlashMessage($key, $message)
+    {
+        self::set('flash_' . $key, $message);
+    }
+
+    // get flash message
+
+    public static function getFlashMessage($key, $default = null)
+    {
+        $message = self::get('flash_' . $key, $default);
+        self::clear('flash_' . $key);
+
+        return $message;
+    }
+
+
+
+
+
+
 }

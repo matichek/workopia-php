@@ -118,6 +118,8 @@ class ListingController
 
             $this->db->query($query, $newListingData);
 
+            Session::setFlashMessage('success_message', 'Listing created successfully.');
+
             redirect('/listings');
 
         }
@@ -151,18 +153,19 @@ class ListingController
 
         // auth
 
-        if(!Authorization::isOwner($listing->user_id)) {
+        if (!Authorization::isOwner($listing->user_id)) {
 
             $_SESSION['error_message'] = "You are not auth to delete this listing.";
 
             return redirect('/listings/' . $listing->id);
 
-        } 
-        
+        }
+
         $this->db->query('DELETE FROM listings WHERE id = :id', $params);
-        
+
         // set flash message
-        $_SESSION['success_message'] = 'Listing deleted successfully';
+
+        Session::setFlashMessage('success_message', 'Listing deleted successfully');
 
         redirect('/listings');
     }
@@ -180,10 +183,9 @@ class ListingController
 
         // auth
 
-        if(!Authorization::isOwner($listing->user_id)) {
+        if (!Authorization::isOwner($listing->user_id)) {
 
-            $_SESSION['error_message'] = "You are not auth to update this listing.";
-
+            Session::setFlashMessage('error_message', 'You are not auth to update this listing.');
             return redirect('/listings/' . $listing->id);
 
         }
@@ -195,8 +197,6 @@ class ListingController
             (new ErrorController())->notFound('Listing not found');
             return;
         }
-
-
 
         loadView('listings/edit', [
             'listing' => $listing
@@ -228,9 +228,7 @@ class ListingController
         $allowedFields = ['title', 'description', 'salary', 'tags', 'company', 'address', 'city', 'company', 'state', 'phone', 'email', 'requirements', 'benefits'];
 
         $updateValues = [];
-
         $updateValues = array_intersect_key($_POST, array_flip($allowedFields));
-
         $updateValues = array_map('sanitize', $updateValues);
 
         $requiredFields = ['title', 'description', 'salary', 'email', 'city', 'state'];
@@ -251,10 +249,10 @@ class ListingController
             exit;
         } else {
             // Submit to database
-          
+
             $updateFields = [];
 
-            foreach(array_keys($updateValues) as  $field) {
+            foreach (array_keys($updateValues) as $field) {
                 $updateFields[] = "{$field} = :{$field}";
             }
 
@@ -266,8 +264,8 @@ class ListingController
 
             $this->db->query($updateQuery, $updateValues);
 
-            $_SESSION['success_message'] = 'Listing updated';
-            
+            Session::setFlashMessage('success_message', 'Listing updated');
+
             redirect('/listings/' . $id);
         }
     }
