@@ -5,6 +5,8 @@ namespace App\Controllers;
 use Framework\Database;
 use Framework\Validation;
 use App\Models\Listing;
+use Framework\Session;
+use Framework\Authorization;
 
 
 class ListingController
@@ -21,7 +23,7 @@ class ListingController
     {
 
 
-        $listings = $this->db->query("SELECT * FROM listings")->fetchAll();
+        $listings = $this->db->query("SELECT * FROM listings ORDER BY created_at DESC")->fetchAll();
 
         loadView('listings/index', [
             'listings' => $listings
@@ -68,7 +70,7 @@ class ListingController
 
         $newListingData = array_intersect_key($_POST, array_flip($allowedFields));
 
-        $newListingData['user_id'] = 1;
+        $newListingData['user_id'] = $_SESSION['user']['id'];
 
         $newListingData = array_map('sanitize', $newListingData);
 
@@ -140,13 +142,25 @@ class ListingController
 
         $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
 
+
+
         if (!$listing) {
             (new ErrorController())->notFound('Listing not found');
             return;
         }
 
-        $this->db->query('DELETE FROM listings WHERE id = :id', $params);
+        // auth
 
+        if(!Authorization::isOwner($listing->user_id)) {
+
+            $_SESSION['error_message'] = "You are not auth to delete this listing.";
+
+            return redirect('/listings/' . $listing->id);
+
+        } 
+        
+        $this->db->query('DELETE FROM listings WHERE id = :id', $params);
+        
         // set flash message
         $_SESSION['success_message'] = 'Listing deleted successfully';
 
@@ -160,6 +174,19 @@ class ListingController
         $params = [
             'id' => $id
         ];
+
+        $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
+
+
+        // auth
+
+        if(!Authorization::isOwner($listing->user_id)) {
+
+            $_SESSION['error_message'] = "You are not auth to update this listing.";
+
+            return redirect('/listings/' . $listing->id);
+
+        }
 
         $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
 
