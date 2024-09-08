@@ -155,7 +155,7 @@ class ListingController
 
         if (!Authorization::isOwner($listing->user_id)) {
 
-            $_SESSION['error_message'] = "You are not auth to delete this listing.";
+            Session::setFlashMessage('error_message', "You are not auth to delete this listing.");
 
             return redirect('/listings/' . $listing->id);
 
@@ -180,17 +180,12 @@ class ListingController
 
         $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
 
-
         // auth
 
         if (!Authorization::isOwner($listing->user_id)) {
-
             Session::setFlashMessage('error_message', 'You are not auth to update this listing.');
             return redirect('/listings/' . $listing->id);
-
         }
-
-        $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
 
         // Check if listing exists
         if (!$listing) {
@@ -219,11 +214,12 @@ class ListingController
             return;
         }
 
-        // Authorization
-        // if (!Authorization::isOwner($listing->user_id)) {
-        //   Session::setFlashMessage('error_message', 'You are not authoirzed to update this listing');
-        //   return redirect('/listings/' . $listing->id);
-        // }
+        // auth
+
+        if (!Authorization::isOwner($listing->user_id)) {
+            Session::setFlashMessage('error_message', 'You are not auth to update this listing');
+            return redirect('/listings/' . $listing->id);
+        }
 
         $allowedFields = ['title', 'description', 'salary', 'tags', 'company', 'address', 'city', 'company', 'state', 'phone', 'email', 'requirements', 'benefits'];
 
