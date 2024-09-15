@@ -266,4 +266,35 @@ class ListingController
         }
     }
 
+    public function search()
+    {
+        $keywords = isset($_GET['keywords']) ? trim($_GET['keywords']) : '';
+        $location = isset($_GET['location']) ? trim($_GET['location']) : '';
+
+        $query = "SELECT * FROM listings WHERE 1=1";
+        $params = [];
+
+        if (!empty($keywords)) {
+            $query .= " AND (title LIKE :keywords OR description LIKE :keywords OR tags LIKE :keywords)";
+            $params[':keywords'] = "%{$keywords}%";
+        }
+
+        if (!empty($location)) {
+            $query .= " AND (city LIKE :location OR state LIKE :location)";
+            $params[':location'] = "%{$location}%";
+        }
+
+        $query .= " ORDER BY created_at DESC";
+
+        $listings = $this->db->query($query, $params)->fetchAll();
+
+        loadView('listings/index', [
+            'listings' => $listings,
+            'keywords' => $keywords,
+            'location' => $location
+        ]);
+    }
+
+
+
 }
